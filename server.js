@@ -9,8 +9,11 @@ const PORT = process.env.PORT || 3000;
 console.log('🚀 SAT Battle Royale Server Starting...');
 console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 console.log(`🌐 Port: ${PORT}`);
+console.log(`🔍 Debug Mode: ENABLED`);
+console.log(`📅 Startup Time: ${new Date().toISOString()}`);
 
 // Minimal middleware for faster startup and health checks
+console.log('🔧 Setting up middleware...');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -25,10 +28,26 @@ app.use(cors({
   credentials: true,
 }));
 
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`📨 ${req.method} ${req.path} - ${new Date().toISOString()}`);
+  next();
+});
+
+console.log('✅ Middleware setup complete');
+
 // CRITICAL: Root health check endpoint - MUST return 200 for Cloud Run
-// Optimized for fastest possible response
+// Optimized for fastest possible response with debugging
 app.get('/', (req, res) => {
-  res.status(200).json({ status: 'healthy' });
+  console.log(`🔍 Health check request at ${new Date().toISOString()}`);
+  const response = { 
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    server: 'SAT Battle Royale',
+    port: PORT
+  };
+  console.log(`✅ Health check response: ${JSON.stringify(response)}`);
+  res.status(200).json(response);
 });
 
 // Additional health endpoint with detailed info
@@ -190,15 +209,27 @@ app.get('/challenge', (req, res) => {
   res.sendFile(path.join(__dirname, 'challenge.html'));
 });
 
-// Error handling middleware
+// Error handling middleware with enhanced debugging
 app.use((error, req, res, next) => {
   console.error('❌ Server Error:', error);
-  res.status(500).json({
-    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message
-  });
+  console.error('❌ Error Stack:', error.stack);
+  console.error('❌ Request Path:', req.path);
+  console.error('❌ Request Method:', req.method);
+  console.error('❌ Request Headers:', req.headers);
+  
+  const errorResponse = {
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
+    timestamp: new Date().toISOString(),
+    path: req.path,
+    method: req.method
+  };
+  
+  console.error('❌ Error Response:', JSON.stringify(errorResponse));
+  res.status(500).json(errorResponse);
 });
 
 // Start server - MUST bind to 0.0.0.0 for Cloud Run
+console.log('🔧 Starting server...');
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ SAT Battle Royale server running on port ${PORT}`);
   console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
@@ -213,15 +244,31 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('🎮 Demo accounts:');
   console.log('  👨‍💼 Admin: admin@satbattle.com / admin123!');
   console.log('  👨‍🎓 Student: student1@example.com / student123!');
+  console.log('');
+  console.log('🔍 Server debug info:');
+  console.log(`  - Process ID: ${process.pid}`);
+  console.log(`  - Node version: ${process.version}`);
+  console.log(`  - Platform: ${process.platform}`);
+  console.log(`  - Architecture: ${process.arch}`);
+  console.log(`  - Memory usage: ${JSON.stringify(process.memoryUsage())}`);
 });
 
-// Add server error handling
+// Add server error handling with enhanced debugging
 server.on('error', (error) => {
   console.error('❌ Server failed to start:', error);
+  console.error('❌ Error code:', error.code);
+  console.error('❌ Error message:', error.message);
+  console.error('❌ Full error:', JSON.stringify(error, null, 2));
+  
   if (error.code === 'EADDRINUSE') {
     console.error(`❌ Port ${PORT} is already in use. Please use a different port.`);
+    console.error('❌ Try running: pkill -f "node" to kill existing processes');
+  } else if (error.code === 'EACCES') {
+    console.error(`❌ Permission denied accessing port ${PORT}`);
   }
-  process.exit(1);
+  
+  console.error('❌ Process will exit in 5 seconds...');
+  setTimeout(() => process.exit(1), 5000);
 });
 
 // Graceful shutdown for Cloud Run
