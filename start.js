@@ -190,25 +190,27 @@ app.post('/api/battles/:id/join', (req, res) => {
 
 // Health check endpoint for Cloud Run deployment (must be before static files)
 app.get('/', (req, res) => {
-  // Check if this is a health check request (accepts JSON)
-  if (req.headers.accept && req.headers.accept.includes('application/json')) {
-    res.status(200).json({ 
-      status: 'healthy', 
-      timestamp: new Date().toISOString(),
-      service: 'SAT Battle Royale',
-      version: '1.0.0'
-    });
-  } else {
-    // Serve the landing page for browser requests
-    res.sendFile(path.join(__dirname, 'index.html'));
-  }
+  // Always return JSON health check for Cloud Run - this is required for deployment
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    service: 'SAT Battle Royale',
+    version: '1.0.0',
+    port: PORT,
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Landing page route (alternative)
+// Landing page route for browser access
 app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Alternative landing page route
+app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
