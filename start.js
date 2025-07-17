@@ -23,11 +23,17 @@ app.use(helmet({
   },
 }));
 
-// CORS configuration
+// CORS configuration - Allow Replit preview domains
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? process.env.ALLOWED_ORIGINS?.split(',') || ['https://your-domain.com'] 
-    : ['http://localhost:3000', 'http://localhost:5173'],
+    : [
+        'http://localhost:3000', 
+        'http://localhost:5173',
+        /^https:\/\/.*\.replit\.app$/,
+        /^https:\/\/.*\.replit\.dev$/,
+        /^https:\/\/.*\.replit\.co$/
+      ],
   credentials: true,
 }));
 
@@ -224,7 +230,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Start server
+// Start server with better error handling
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 SAT Battle Royale server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -234,9 +240,20 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🎮 Dashboard: http://localhost:${PORT}/dashboard`);
   console.log(`🎯 Challenge: http://localhost:${PORT}/challenge`);
   
+  if (process.env.REPLIT_DOMAINS) {
+    console.log(`🌐 Replit Preview: ${process.env.REPLIT_DOMAINS}`);
+  }
+  
   console.log('\n🎯 Ready to use! Try these demo accounts:');
   console.log('  📧 Admin: admin@satbattle.com / admin123!');
   console.log('  👨‍🎓 Student: student1@example.com / student123!');
+}).on('error', (err) => {
+  console.error('❌ Server error:', err.message);
+  if (err.code === 'EADDRINUSE') {
+    console.log(`Port ${PORT} is already in use. Trying to start on another port...`);
+    const alternatePort = parseInt(PORT) + 1;
+    server.listen(alternatePort, '0.0.0.0');
+  }
 });
 
 // Graceful shutdown handler for Cloud Run
