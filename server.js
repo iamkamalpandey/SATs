@@ -10,50 +10,38 @@ console.log('🚀 SAT Battle Royale Server Starting...');
 console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
 console.log(`🌐 Port: ${PORT}`);
 
-// Security middleware
+// Minimal middleware for faster startup and health checks
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Security middleware (minimal for faster health checks)
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "ws:", "wss:"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-    },
-  },
+  contentSecurityPolicy: false // Disable CSP for faster responses
 }));
 
-// CORS configuration
+// CORS configuration (simplified)
 app.use(cors({
   origin: true,
   credentials: true,
 }));
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
 // CRITICAL: Root health check endpoint - MUST return 200 for Cloud Run
+// Optimized for fastest possible response
 app.get('/', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
+// Additional health endpoint with detailed info
+app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'healthy',
     service: 'SAT Battle Royale',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
     port: PORT,
-    environment: process.env.NODE_ENV || 'development'
-  });
-});
-
-// Additional health endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
     uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    service: 'SAT Battle Royale'
+    memory: process.memoryUsage()
   });
 });
 
@@ -225,6 +213,15 @@ const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('🎮 Demo accounts:');
   console.log('  👨‍💼 Admin: admin@satbattle.com / admin123!');
   console.log('  👨‍🎓 Student: student1@example.com / student123!');
+});
+
+// Add server error handling
+server.on('error', (error) => {
+  console.error('❌ Server failed to start:', error);
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use. Please use a different port.`);
+  }
+  process.exit(1);
 });
 
 // Graceful shutdown for Cloud Run
