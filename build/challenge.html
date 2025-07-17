@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAT Challenge - SAT Battle Royale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .challenge-container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 3rem;
+            color: #333;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .challenge-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .challenge-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 1rem;
+            height: 1rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #6366f1;
+            background: #f0f9ff;
+        }
+
+        .option.selected {
+            border-color: #6366f1;
+            background: #dbeafe;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .option-letter {
+            font-weight: 600;
+            margin-right: 1rem;
+            min-width: 2rem;
+        }
+
+        .timer {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .timer.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .timer.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #dc2626;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+            border: 2px solid #6366f1;
+        }
+
+        .btn-secondary:hover {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .hint-section {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .hint-section.active {
+            display: block;
+        }
+
+        .hint-text {
+            color: #9a3412;
+            font-style: italic;
+        }
+
+        .explanation-section {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .explanation-section.active {
+            display: block;
+        }
+
+        .explanation-text {
+            color: #0c4a6e;
+            line-height: 1.6;
+        }
+
+        .ai-analysis {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .ai-analysis.active {
+            display: block;
+        }
+
+        .ai-analysis h4 {
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .results-card.active {
+            display: block;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6366f1;
+            margin: 1rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .challenge-container {
+                padding: 2rem;
+            }
+            
+            .challenge-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="challenge-container">
+        <div class="timer" id="timer">60s</div>
+        
+        <div class="challenge-header">
+            <h1 class="challenge-title">SAT Mathematics Challenge</h1>
+            <div class="challenge-info">
+                <div class="info-item">
+                    <div class="info-label">Question</div>
+                    <div class="info-value" id="questionNumber">1 / 5</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Difficulty</div>
+                    <div class="info-value" id="difficulty">Medium</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Score</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-card" id="questionCard">
+            <div class="question-number" id="questionMeta">Question 1 of 5 • Mathematics • Medium</div>
+            <div class="question-text" id="questionText">
+                If 2x + 5 = 13, what is the value of x?
+            </div>
+            <div class="question-options" id="questionOptions">
+                <div class="option" onclick="selectOption(this, 'A')">
+                    <span class="option-letter">A)</span>
+                    <span>3</span>
+                </div>
+                <div class="option" onclick="selectOption(this, 'B')">
+                    <span class="option-letter">B)</span>
+                    <span>4</span>
+                </div>
+                <div class="option" onclick="selectOption(this, 'C')">
+                    <span class="option-letter">C)</span>
+                    <span>5</span>
+                </div>
+                <div class="option" onclick="selectOption(this, 'D')">
+                    <span class="option-letter">D)</span>
+                    <span>6</span>
+                </div>
+            </div>
+
+            <div class="hint-section" id="hintSection">
+                <h4>💡 Hint:</h4>
+                <p class="hint-text" id="hintText"></p>
+            </div>
+
+            <div class="explanation-section" id="explanationSection">
+                <h4>📚 Explanation:</h4>
+                <p class="explanation-text" id="explanationText"></p>
+            </div>
+
+            <div class="ai-analysis" id="aiAnalysis">
+                <h4>🧠 AI Analysis:</h4>
+                <p id="aiAnalysisText"></p>
+            </div>
+        </div>
+
+        <div class="results-card" id="resultsCard">
+            <div class="result-icon" id="resultIcon">🎉</div>
+            <div class="result-title" id="resultTitle">Challenge Complete!</div>
+            <div class="result-description" id="resultDescription">Great job completing the challenge!</div>
+            <div class="score-display" id="finalScore">4/5</div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="getHint()" id="hintBtn">Get Hint</button>
+            <button class="btn btn-primary" onclick="submitAnswer()" id="submitBtn" disabled>Submit Answer</button>
+            <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn" style="display: none;">Next Question</button>
+            <button class="btn btn-primary" onclick="goToDashboard()" id="finishBtn" style="display: none;">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample questions for the demo
+        const sampleQuestions = [
+            {
+                id: 1,
+                category: 'mathematics',
+                difficulty: 'easy',
+                question: 'If 2x + 5 = 13, what is the value of x?',
+                options: ['A) 3', 'B) 4', 'C) 5', 'D) 6'],
+                correctAnswer: 'B) 4',
+                explanation: 'Solve for x: 2x + 5 = 13, so 2x = 8, therefore x = 4.',
+                timeLimit: 60
+            },
+            {
+                id: 2,
+                category: 'mathematics',
+                difficulty: 'medium',
+                question: 'What is 25% of 80?',
+                options: ['A) 15', 'B) 20', 'C) 25', 'D) 30'],
+                correctAnswer: 'B) 20',
+                explanation: '25% of 80 = 0.25 × 80 = 20.',
+                timeLimit: 45
+            },
+            {
+                id: 3,
+                category: 'reading_writing',
+                difficulty: 'easy',
+                question: 'The word "meticulous" in the sentence "She was meticulous about her research" most nearly means:',
+                options: ['A) Careless', 'B) Careful and thorough', 'C) Quick', 'D) Confused'],
+                correctAnswer: 'B) Careful and thorough',
+                explanation: 'Meticulous means showing great attention to detail; being very careful and precise.',
+                timeLimit: 45
+            },
+            {
+                id: 4,
+                category: 'mathematics',
+                difficulty: 'hard',
+                question: 'A circle has a radius of 5 units. What is the area of the circle?',
+                options: ['A) 25π', 'B) 10π', 'C) 5π', 'D) 50π'],
+                correctAnswer: 'A) 25π',
+                explanation: 'Area of a circle = πr². With r = 5, Area = π(5)² = 25π.',
+                timeLimit: 75
+            },
+            {
+                id: 5,
+                category: 'reading_writing',
+                difficulty: 'medium',
+                question: 'Which choice best combines the sentences at the underlined portion? "The library was quiet. Students were studying for exams."',
+                options: ['A) quiet, students', 'B) quiet; students', 'C) quiet because students', 'D) quiet, and students'],
+                correctAnswer: 'D) quiet, and students',
+                explanation: 'The coordinating conjunction "and" with a comma correctly joins two independent clauses.',
+                timeLimit: 60
+            }
+        ];
+
+        // Challenge state
+        let currentQuestionIndex = 0;
+        let selectedAnswer = null;
+        let score = 0;
+        let timer = null;
+        let timeLeft = 60;
+        let hintsUsed = 0;
+
+        // Initialize challenge
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestion();
+            startTimer();
+        });
+
+        function loadQuestion() {
+            const question = sampleQuestions[currentQuestionIndex];
+            
+            // Update question display
+            document.getElementById('questionNumber').textContent = `${currentQuestionIndex + 1} / ${sampleQuestions.length}`;
+            document.getElementById('difficulty').textContent = question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1);
+            document.getElementById('questionMeta').textContent = `Question ${currentQuestionIndex + 1} of ${sampleQuestions.length} • ${question.category === 'mathematics' ? 'Mathematics' : 'Reading & Writing'} • ${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / sampleQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            // Load options
+            const optionsContainer = document.getElementById('questionOptions');
+            optionsContainer.innerHTML = question.options.map((option, index) => `
+                <div class="option" onclick="selectOption(this, '${option.charAt(0)}')">
+                    <span class="option-letter">${option.charAt(0)})</span>
+                    <span>${option.substring(3)}</span>
+                </div>
+            `).join('');
+            
+            // Reset state
+            selectedAnswer = null;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('hintSection').classList.remove('active');
+            document.getElementById('explanationSection').classList.remove('active');
+            document.getElementById('aiAnalysis').classList.remove('active');
+            
+            // Reset timer
+            timeLeft = question.timeLimit;
+            updateTimer();
+        }
+
+        function selectOption(element, answer) {
+            // Clear previous selections
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedAnswer = answer;
+            
+            // Enable submit button
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitAnswer();
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = `${timeLeft}s`;
+            
+            if (timeLeft <= 10) {
+                timerElement.classList.add('danger');
+            } else if (timeLeft <= 30) {
+                timerElement.classList.add('warning');
+            } else {
+                timerElement.classList.remove('warning', 'danger');
+            }
+        }
+
+        async function getHint() {
+            try {
+                const question = sampleQuestions[currentQuestionIndex];
+                
+                // Sample hints for demo
+                const hints = {
+                    1: 'Start by isolating the term with x. What do you need to subtract from both sides?',
+                    2: 'Remember that 25% = 0.25. Multiply this by the given number.',
+                    3: 'Look for context clues in the sentence. What does being careful about research suggest?',
+                    4: 'Use the formula A = πr². What is r in this problem?',
+                    5: 'Two independent clauses can be joined with a comma and a coordinating conjunction.'
+                };
+                
+                const hintText = hints[question.id] || 'Think about the key concepts involved in this problem.';
+                
+                document.getElementById('hintText').textContent = hintText;
+                document.getElementById('hintSection').classList.add('active');
+                
+                hintsUsed++;
+                document.getElementById('hintBtn').disabled = true;
+                
+            } catch (error) {
+                console.error('Error getting hint:', error);
+            }
+        }
+
+        async function submitAnswer() {
+            clearInterval(timer);
+            
+            const question = sampleQuestions[currentQuestionIndex];
+            const isCorrect = selectedAnswer && selectedAnswer === question.correctAnswer.charAt(0);
+            
+            // Update score
+            if (isCorrect) {
+                score++;
+            }
+            
+            document.getElementById('score').textContent = score;
+            
+            // Show correct answer
+            document.querySelectorAll('.option').forEach(opt => {
+                const optionLetter = opt.querySelector('.option-letter').textContent.charAt(0);
+                if (optionLetter === question.correctAnswer.charAt(0)) {
+                    opt.classList.add('correct');
+                } else if (optionLetter === selectedAnswer && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            // Show explanation
+            document.getElementById('explanationText').textContent = question.explanation;
+            document.getElementById('explanationSection').classList.add('active');
+            
+            // Show AI analysis (simulated)
+            const aiAnalysisText = isCorrect 
+                ? 'Great job! Your approach was correct. This demonstrates good understanding of the concept.'
+                : 'This is a common mistake. Focus on the key steps and practice similar problems.';
+            
+            document.getElementById('aiAnalysisText').textContent = aiAnalysisText;
+            document.getElementById('aiAnalysis').classList.add('active');
+            
+            // Update buttons
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('hintBtn').style.display = 'none';
+            
+            if (currentQuestionIndex < sampleQuestions.length - 1) {
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            } else {
+                showResults();
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            document.getElementById('hintBtn').style.display = 'inline-block';
+            document.getElementById('hintBtn').disabled = false;
+            
+            loadQuestion();
+            startTimer();
+        }
+
+        function showResults() {
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('resultsCard').classList.add('active');
+            
+            const percentage = (score / sampleQuestions.length) * 100;
+            
+            // Update results display
+            document.getElementById('finalScore').textContent = `${score}/${sampleQuestions.length}`;
+            
+            if (percentage >= 80) {
+                document.getElementById('resultIcon').textContent = '🎉';
+                document.getElementById('resultTitle').textContent = 'Excellent!';
+                document.getElementById('resultDescription').textContent = 'Outstanding performance! You\'re well prepared for the SAT.';
+            } else if (percentage >= 60) {
+                document.getElementById('resultIcon').textContent = '👍';
+                document.getElementById('resultTitle').textContent = 'Good Job!';
+                document.getElementById('resultDescription').textContent = 'Solid performance! Keep practicing to improve further.';
+            } else {
+                document.getElementById('resultIcon').textContent = '📚';
+                document.getElementById('resultTitle').textContent = 'Keep Learning!';
+                document.getElementById('resultDescription').textContent = 'Great effort! Focus on the concepts you missed and try again.';
+            }
+            
+            document.getElementById('finishBtn').style.display = 'inline-block';
+        }
+
+        function goToDashboard() {
+            window.location.href = '/dashboard';
+        }
+    </script>
+</body>
+</html>

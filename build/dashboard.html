@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SAT Battle Royale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #6366f1;
+            text-decoration: none;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-left-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .sidebar-nav .icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: #6366f1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #6366f1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 0.5rem;
+            height: 0.5rem;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(99, 102, 241, 0.1);
+            color: #6366f1;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        /* Battle Royale Section */
+        .battle-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .battle-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-waiting {
+            background: rgba(255, 193, 7, 0.2);
+            color: #d97706;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #059669;
+        }
+
+        /* Challenge Cards */
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .challenge-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide sections initially */
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="logo">SAT Battle Royale</a>
+            </div>
+            <nav>
+                <ul class="sidebar-nav" id="sidebarNav">
+                    <!-- Navigation items will be populated by JavaScript -->
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title" id="dashboardTitle">Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userName">User</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- Student Dashboard -->
+            <div id="studentDashboard" class="dashboard-section">
+                <!-- Stats Grid -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Current SAT Score</h3>
+                            <span class="card-icon">📊</span>
+                        </div>
+                        <div class="stat-number" id="currentScore">0</div>
+                        <div class="stat-label">Target: <span id="targetScore">1600</span></div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="scoreProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">XP & Level</h3>
+                            <span class="card-icon">🏆</span>
+                        </div>
+                        <div class="stat-number" id="userLevel">1</div>
+                        <div class="stat-label"><span id="userXp">0</span> XP</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="xpProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Streak Days</h3>
+                            <span class="card-icon">🔥</span>
+                        </div>
+                        <div class="stat-number" id="streakDays">0</div>
+                        <div class="stat-label">Keep it up!</div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Accuracy</h3>
+                            <span class="card-icon">🎯</span>
+                        </div>
+                        <div class="stat-number" id="accuracy">0%</div>
+                        <div class="stat-label">Overall Performance</div>
+                    </div>
+                </div>
+
+                <!-- Battle Royale Section -->
+                <div class="battle-section">
+                    <div class="battle-header">
+                        <h2>Battle Royale</h2>
+                        <div class="battle-status status-waiting" id="battleStatus">
+                            <span class="status-dot"></span>
+                            Waiting for Players
+                        </div>
+                    </div>
+                    <p>Join the ultimate SAT prep battle! Compete against 100 players in real-time challenges.</p>
+                    <br>
+                    <button class="btn btn-primary" onclick="joinBattle()">Join Battle</button>
+                    <button class="btn btn-secondary" onclick="createBattle()">Create Private Battle</button>
+                </div>
+
+                <!-- Daily Challenges -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Challenges</h3>
+                        <span class="card-icon">📅</span>
+                    </div>
+                    <div class="challenge-grid" id="dailyChallenges">
+                        <!-- Challenge cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="dashboard-section">
+                <!-- Admin Stats Grid -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Total Users</h3>
+                            <span class="card-icon">👥</span>
+                        </div>
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Active: <span id="activeUsers">0</span></div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Total Games</h3>
+                            <span class="card-icon">🎮</span>
+                        </div>
+                        <div class="stat-number" id="totalGames">0</div>
+                        <div class="stat-label">Active Battles</div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Questions</h3>
+                            <span class="card-icon">❓</span>
+                        </div>
+                        <div class="stat-number" id="totalQuestions">0</div>
+                        <div class="stat-label">In Database</div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Leads</h3>
+                            <span class="card-icon">📈</span>
+                        </div>
+                        <div class="stat-number" id="totalLeads">0</div>
+                        <div class="stat-label">New: <span id="newLeads">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Lead Management -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Leads</h3>
+                        <button class="btn btn-primary" onclick="refreshLeads()">Refresh</button>
+                    </div>
+                    <div id="leadsTable">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #e5e7eb;">
+                                    <th style="padding: 1rem; text-align: left;">Name</th>
+                                    <th style="padding: 1rem; text-align: left;">Email</th>
+                                    <th style="padding: 1rem; text-align: left;">School</th>
+                                    <th style="padding: 1rem; text-align: left;">Status</th>
+                                    <th style="padding: 1rem; text-align: left;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leadsTableBody">
+                                <!-- Leads will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userToken = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+
+        function checkAuth() {
+            userToken = localStorage.getItem('token');
+            const userData = localStorage.getItem('user');
+            
+            if (!userToken || !userData) {
+                window.location.href = '/';
+                return;
+            }
+            
+            currentUser = JSON.parse(userData);
+            initializeDashboard();
+        }
+
+        function initializeDashboard() {
+            // Update user info
+            document.getElementById('userName').textContent = currentUser.firstName + ' ' + currentUser.lastName;
+            document.getElementById('userAvatar').textContent = currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0);
+
+            // Setup navigation based on user role
+            setupNavigation();
+            
+            // Load dashboard data
+            loadDashboardData();
+        }
+
+        function setupNavigation() {
+            const sidebarNav = document.getElementById('sidebarNav');
+            let navItems = [];
+
+            if (currentUser.role === 'admin') {
+                navItems = [
+                    { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                    { id: 'users', icon: '👥', label: 'User Management' },
+                    { id: 'leads', icon: '📈', label: 'Lead Management' },
+                    { id: 'questions', icon: '❓', label: 'Question Bank' },
+                    { id: 'analytics', icon: '📈', label: 'Analytics' },
+                    { id: 'settings', icon: '⚙️', label: 'Settings' }
+                ];
+            } else {
+                navItems = [
+                    { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                    { id: 'practice', icon: '📚', label: 'Practice' },
+                    { id: 'battles', icon: '⚔️', label: 'Battle Royale' },
+                    { id: 'challenges', icon: '🎯', label: 'Daily Challenges' },
+                    { id: 'squads', icon: '👥', label: 'My Squad' },
+                    { id: 'progress', icon: '📈', label: 'Progress' },
+                    { id: 'profile', icon: '👤', label: 'Profile' }
+                ];
+            }
+
+            sidebarNav.innerHTML = navItems.map(item => `
+                <li>
+                    <a href="#" onclick="navigateTo('${item.id}')" class="${item.active ? 'active' : ''}">
+                        <span class="icon">${item.icon}</span>
+                        ${item.label}
+                    </a>
+                </li>
+            `).join('');
+
+            // Show appropriate dashboard section
+            if (currentUser.role === 'admin') {
+                document.getElementById('adminDashboard').classList.add('active');
+                document.getElementById('dashboardTitle').textContent = 'Admin Dashboard';
+            } else {
+                document.getElementById('studentDashboard').classList.add('active');
+                document.getElementById('dashboardTitle').textContent = 'Student Dashboard';
+            }
+        }
+
+        function navigateTo(section) {
+            // Update active nav item
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            event.target.closest('a').classList.add('active');
+
+            // For now, just show different sections based on user role
+            // In a full implementation, this would show different content
+            console.log('Navigating to:', section);
+        }
+
+        async function loadDashboardData() {
+            try {
+                if (currentUser.role === 'admin') {
+                    await loadAdminDashboard();
+                } else {
+                    await loadStudentDashboard();
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        async function loadStudentDashboard() {
+            try {
+                // Load user stats
+                const response = await fetch('/api/stats/user', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+                
+                const stats = await response.json();
+                
+                // Update stats display
+                document.getElementById('currentScore').textContent = stats.user.currentSatScore || 0;
+                document.getElementById('targetScore').textContent = stats.user.targetSatScore || 1600;
+                document.getElementById('userLevel').textContent = stats.user.level || 1;
+                document.getElementById('userXp').textContent = stats.user.xp || 0;
+                document.getElementById('streakDays').textContent = stats.user.streakDays || 0;
+                document.getElementById('accuracy').textContent = Math.round(stats.accuracy || 0) + '%';
+                
+                // Update progress bars
+                const scoreProgress = ((stats.user.currentSatScore || 0) / (stats.user.targetSatScore || 1600)) * 100;
+                document.getElementById('scoreProgress').style.width = `${Math.min(scoreProgress, 100)}%`;
+                
+                const xpProgress = ((stats.user.xp || 0) % 1000) / 10; // Assume 1000 XP per level
+                document.getElementById('xpProgress').style.width = `${xpProgress}%`;
+                
+                // Load daily challenges
+                await loadDailyChallenges();
+                
+            } catch (error) {
+                console.error('Error loading student dashboard:', error);
+            }
+        }
+
+        async function loadAdminDashboard() {
+            try {
+                const response = await fetch('/api/admin/dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+                
+                const stats = await response.json();
+                
+                // Update admin stats
+                document.getElementById('totalUsers').textContent = stats.totalUsers || 0;
+                document.getElementById('activeUsers').textContent = stats.activeUsers || 0;
+                document.getElementById('totalGames').textContent = stats.totalGames || 0;
+                document.getElementById('totalQuestions').textContent = stats.totalQuestions || 0;
+                document.getElementById('totalLeads').textContent = stats.totalLeads || 0;
+                document.getElementById('newLeads').textContent = stats.newLeads || 0;
+                
+                // Load leads table
+                await loadLeads();
+                
+            } catch (error) {
+                console.error('Error loading admin dashboard:', error);
+            }
+        }
+
+        async function loadDailyChallenges() {
+            try {
+                const response = await fetch('/api/challenges/daily', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+                
+                const challenges = await response.json();
+                const challengesContainer = document.getElementById('dailyChallenges');
+                
+                if (challenges.length === 0) {
+                    challengesContainer.innerHTML = '<p>No challenges available today. Check back later!</p>';
+                    return;
+                }
+                
+                challengesContainer.innerHTML = challenges.map(challenge => `
+                    <div class="challenge-card">
+                        <div class="challenge-icon">${challenge.category === 'mathematics' ? '🔢' : '📖'}</div>
+                        <div class="challenge-title">${challenge.category === 'mathematics' ? 'Math' : 'Reading & Writing'} Challenge</div>
+                        <div class="challenge-description">${challenge.difficulty.charAt(0).toUpperCase() + challenge.difficulty.slice(1)} Level</div>
+                        <button class="btn btn-primary" onclick="startChallenge(${challenge.id})">Start Challenge</button>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading daily challenges:', error);
+            }
+        }
+
+        async function loadLeads() {
+            try {
+                const response = await fetch('/api/admin/leads', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+                
+                const leads = await response.json();
+                const leadsTableBody = document.getElementById('leadsTableBody');
+                
+                leadsTableBody.innerHTML = leads.map(lead => `
+                    <tr style="border-bottom: 1px solid #f3f4f6;">
+                        <td style="padding: 1rem;">${lead.firstName} ${lead.lastName}</td>
+                        <td style="padding: 1rem;">${lead.email}</td>
+                        <td style="padding: 1rem;">${lead.school || 'N/A'}</td>
+                        <td style="padding: 1rem;">
+                            <span class="badge badge-${lead.status}">${lead.status}</span>
+                        </td>
+                        <td style="padding: 1rem;">
+                            <button class="btn btn-secondary" onclick="updateLeadStatus(${lead.id})">Update</button>
+                        </td>
+                    </tr>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading leads:', error);
+            }
+        }
+
+        // Action functions
+        async function joinBattle() {
+            try {
+                const response = await fetch('/api/battles', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`
+                    }
+                });
+                
+                const battles = await response.json();
+                const waitingBattle = battles.find(battle => battle.status === 'waiting');
+                
+                if (waitingBattle) {
+                    const joinResponse = await fetch(`/api/battles/${waitingBattle.id}/join`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${userToken}`
+                        }
+                    });
+                    
+                    if (joinResponse.ok) {
+                        alert('Successfully joined the battle!');
+                        // In a real app, this would redirect to the battle interface
+                    } else {
+                        alert('Failed to join battle. Please try again.');
+                    }
+                } else {
+                    alert('No battles available. Creating a new one...');
+                    await createBattle();
+                }
+                
+            } catch (error) {
+                console.error('Error joining battle:', error);
+                alert('Error joining battle. Please try again.');
+            }
+        }
+
+        async function createBattle() {
+            try {
+                const response = await fetch('/api/battles', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        maxPlayers: 10,
+                        questions: []
+                    })
+                });
+                
+                if (response.ok) {
+                    const battle = await response.json();
+                    alert('Battle created successfully!');
+                    console.log('Created battle:', battle);
+                } else {
+                    alert('Failed to create battle. Please try again.');
+                }
+                
+            } catch (error) {
+                console.error('Error creating battle:', error);
+                alert('Error creating battle. Please try again.');
+            }
+        }
+
+        function startChallenge(challengeId) {
+            // In a real app, this would start the challenge
+            alert(`Starting challenge ${challengeId}...`);
+        }
+
+        function updateLeadStatus(leadId) {
+            // In a real app, this would open a modal to update lead status
+            const newStatus = prompt('Enter new status (new, contacted, interested, converted, lost):');
+            if (newStatus) {
+                fetch(`/api/admin/leads/${leadId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                }).then(() => {
+                    loadLeads();
+                });
+            }
+        }
+
+        async function refreshLeads() {
+            await loadLeads();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
