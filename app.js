@@ -41,6 +41,11 @@ app.post('/api/auth/login', (req, res) => {
       token: 'demo-student-token',
       user: { id: 2, email, firstName: 'Student', lastName: '1', role: 'student' }
     });
+  } else if (email === 'teacher@satbattle.com' && password === 'teacher123!') {
+    res.json({
+      token: 'demo-teacher-token',
+      user: { id: 3, email, firstName: 'Teacher', lastName: 'Demo', role: 'teacher' }
+    });
   } else {
     res.status(401).json({ error: 'Invalid credentials' });
   }
