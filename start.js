@@ -40,6 +40,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
+// Additional health check endpoint for Cloud Run
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    service: 'SAT Battle Royale',
+    version: '1.0.0'
+  });
+});
+
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
   
@@ -172,11 +182,27 @@ app.post('/api/battles/:id/join', (req, res) => {
   res.json({ success: true });
 });
 
+// Health check endpoint for Cloud Run deployment (must be before static files)
+app.get('/', (req, res) => {
+  // Check if this is a health check request (accepts JSON)
+  if (req.headers.accept && req.headers.accept.includes('application/json')) {
+    res.status(200).json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      service: 'SAT Battle Royale',
+      version: '1.0.0'
+    });
+  } else {
+    // Serve the landing page for browser requests
+    res.sendFile(path.join(__dirname, 'index.html'));
+  }
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 
-// Routes
-app.get('/', (req, res) => {
+// Landing page route (alternative)
+app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
@@ -203,7 +229,8 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 SAT Battle Royale server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
-  console.log(`🌐 Landing page: http://localhost:${PORT}`);
+  console.log(`🌐 Health check: http://localhost:${PORT}/`);
+  console.log(`🌐 Landing page: http://localhost:${PORT}/app`);
   console.log(`🎮 Dashboard: http://localhost:${PORT}/dashboard`);
   console.log(`🎯 Challenge: http://localhost:${PORT}/challenge`);
   
