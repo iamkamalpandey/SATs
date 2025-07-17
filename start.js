@@ -199,9 +199,10 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 SAT Battle Royale server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
   console.log(`🌐 Landing page: http://localhost:${PORT}`);
   console.log(`🎮 Dashboard: http://localhost:${PORT}/dashboard`);
   console.log(`🎯 Challenge: http://localhost:${PORT}/challenge`);
