@@ -8,17 +8,6 @@ export PORT=${PORT:-3000}
 # Navigate to the application directory
 cd /home/runner/workspace
 
-# Check which entry point to use
-if [ -f "run.js" ]; then
-    echo "🎯 Starting server with run.js on port $PORT..."
-    exec node run.js
-elif [ -f "app.js" ]; then
-    echo "🎯 Starting server with app.js on port $PORT..."
-    exec node app.js
-elif [ -f "index.js" ]; then
-    echo "🎯 Starting server with index.js on port $PORT..."
-    exec node index.js
-else
-    echo "❌ Error: No entry point found!"
-    exit 1
-fi
+# Start the server
+echo "🎯 Starting server with server.js on port $PORT..."
+exec node server.js
