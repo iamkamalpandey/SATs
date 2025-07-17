@@ -1,0 +1,12 @@
+#!/bin/bash
+# Custom npm wrapper for deployment build
+
+# If this is a build command, run our build script
+if [ "$1" = "run" ] && [ "$2" = "build" ]; then
+    echo "Running custom build script..."
+    node scripts/build.js
+    exit $?
+fi
+
+# For all other commands, use the real npm
+exec /nix/store/lyx73qs96hfazl77arnwllwckq9dy012-nodejs-20.18.1-wrapped/bin/npm "$@"
