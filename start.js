@@ -248,15 +248,6 @@ const gracefulShutdown = () => {
   });
 };
 
-// Graceful shutdown handler for Cloud Run
-const gracefulShutdown = () => {
-  console.log('\n👋 Shutting down SAT Battle Royale...');
-  server.close(() => {
-    console.log('🔒 Server closed');
-    process.exit(0);
-  });
-};
-
 // Handle process termination
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
