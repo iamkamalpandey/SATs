@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAT Battle Royale - The Ultimate SAT Prep Gaming Experience</title>
+    <meta name="description" content="Transform your SAT prep with our revolutionary battle royale gaming platform. Join millions of students who are achieving their dream scores through competitive learning." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://satbattleroyale.com/" />
+    <meta property="og:title" content="SAT Battle Royale - The Ultimate SAT Prep Gaming Experience" />
+    <meta property="og:description" content="Transform your SAT prep with our revolutionary battle royale gaming platform. Join millions of students who are achieving their dream scores through competitive learning." />
+    <meta property="og:image" content="https://satbattleroyale.com/og-image.jpg" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://satbattleroyale.com/" />
+    <meta property="twitter:title" content="SAT Battle Royale - The Ultimate SAT Prep Gaming Experience" />
+    <meta property="twitter:description" content="Transform your SAT prep with our revolutionary battle royale gaming platform. Join millions of students who are achieving their dream scores through competitive learning." />
+    <meta property="twitter:image" content="https://satbattleroyale.com/twitter-image.jpg" />
+    
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+        line-height: 1.6;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      
+      /* Header */
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+      }
+      
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #6366f1;
+        text-decoration: none;
+      }
+      
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+      }
+      
+      .nav-links a {
+        text-decoration: none;
+        color: #374151;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      
+      .nav-links a:hover {
+        color: #6366f1;
+      }
+      
+      .auth-buttons {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+      
+      .btn-primary {
+        background: #6366f1;
+        color: white;
+      }
+      
+      .btn-primary:hover {
+        background: #4f46e5;
+        transform: translateY(-2px);
+      }
+      
+      .btn-secondary {
+        background: transparent;
+        color: #6366f1;
+        border: 2px solid #6366f1;
+      }
+      
+      .btn-secondary:hover {
+        background: #6366f1;
+        color: white;
+      }
+      
+      /* Hero Section */
+      .hero {
+        text-align: center;
+        padding: 4rem 0;
+        color: white;
+      }
+      
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #fff 0%, #f3f4f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+      }
+      
+      .btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+      }
+      
+      /* Features */
+      .features {
+        background: white;
+        padding: 4rem 0;
+      }
+      
+      .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #1f2937;
+      }
+      
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      
+      .feature-card {
+        background: #f8fafc;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+        transition: transform 0.3s;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+      
+      .feature-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #1f2937;
+      }
+      
+      .feature-card p {
+        color: #6b7280;
+      }
+      
+      /* Auth Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        width: 90%;
+        max-width: 400px;
+        position: relative;
+      }
+      
+      .close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #6b7280;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #374151;
+        font-weight: 500;
+      }
+      
+      .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+      }
+      
+      .form-group input:focus {
+        outline: none;
+        border-color: #6366f1;
+      }
+      
+      .form-tabs {
+        display: flex;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      
+      .form-tab {
+        flex: 1;
+        padding: 1rem;
+        text-align: center;
+        cursor: pointer;
+        color: #6b7280;
+        font-weight: 500;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s;
+      }
+      
+      .form-tab.active {
+        color: #6366f1;
+        border-bottom-color: #6366f1;
+      }
+      
+      .form-content {
+        display: none;
+      }
+      
+      .form-content.active {
+        display: block;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+        
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+        
+        .cta-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <a href="#" class="logo">SAT Battle Royale</a>
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="auth-buttons">
+          <a href="#" class="btn btn-secondary" onclick="openModal('login')">Sign In</a>
+          <a href="#" class="btn btn-primary" onclick="openModal('register')">Get Started</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h1>The Fortnite of SAT Prep</h1>
+          <p>Transform boring test preparation into an epic multiplayer gaming experience. Battle friends, level up your skills, and achieve your dream SAT score.</p>
+          <div class="cta-buttons">
+            <a href="#" class="btn btn-primary btn-large" onclick="openModal('register')">Start Playing Now</a>
+            <a href="#" class="btn btn-secondary btn-large" onclick="openModal('demo')">Watch Demo</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="features" id="features">
+        <div class="container">
+          <h2>Why Students Love SAT Battle Royale</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🎮</div>
+              <h3>Battle Royale Mode</h3>
+              <p>100 players drop into SAT challenges. Answer questions to survive. Last player standing wins big rewards!</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🧠</div>
+              <h3>AI-Powered Analysis</h3>
+              <p>DeepSeek AI analyzes your performance and creates personalized study plans to maximize your score improvement.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">👥</div>
+              <h3>Squad Mode</h3>
+              <p>Team up with friends to tackle challenges together. Collaborative learning that makes studying fun and social.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🏆</div>
+              <h3>Daily Challenges</h3>
+              <p>TikTok-style micro-learning sessions that build consistent study habits and unlock exclusive rewards.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Progress Tracking</h3>
+              <p>Real-time analytics show your improvement across all SAT sections with detailed performance insights.</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">🎯</div>
+              <h3>Adaptive Learning</h3>
+              <p>Questions adjust to your skill level in real-time, ensuring you're always challenged at the perfect difficulty.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        
+        <div class="form-tabs">
+          <div class="form-tab active" onclick="switchTab('login')">Sign In</div>
+          <div class="form-tab" onclick="switchTab('register')">Sign Up</div>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm" class="form-content active">
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+          </form>
+        </div>
+        
+        <!-- Register Form -->
+        <div id="registerForm" class="form-content">
+          <form onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label for="registerFirstName">First Name</label>
+              <input type="text" id="registerFirstName" required>
+            </div>
+            <div class="form-group">
+              <label for="registerLastName">Last Name</label>
+              <input type="text" id="registerLastName" required>
+            </div>
+            <div class="form-group">
+              <label for="registerUsername">Username</label>
+              <input type="text" id="registerUsername" required>
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" required>
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Password</label>
+              <input type="password" id="registerPassword" required>
+            </div>
+            <div class="form-group">
+              <label for="registerConfirmPassword">Confirm Password</label>
+              <input type="password" id="registerConfirmPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Modal functions
+      function openModal(type) {
+        document.getElementById('authModal').style.display = 'flex';
+        if (type === 'register') {
+          switchTab('register');
+        }
+      }
+      
+      function closeModal() {
+        document.getElementById('authModal').style.display = 'none';
+      }
+      
+      function switchTab(tab) {
+        // Update tab buttons
+        document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.form-content').forEach(c => c.classList.remove('active'));
+        
+        if (tab === 'login') {
+          document.querySelector('.form-tab').classList.add('active');
+          document.getElementById('loginForm').classList.add('active');
+        } else {
+          document.querySelectorAll('.form-tab')[1].classList.add('active');
+          document.getElementById('registerForm').classList.add('active');
+        }
+      }
+      
+      // Auth handlers
+      async function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = '/dashboard';
+          } else {
+            alert('Login failed: ' + data.error);
+          }
+        } catch (error) {
+          alert('Login failed: ' + error.message);
+        }
+      }
+      
+      async function handleRegister(event) {
+        event.preventDefault();
+        const firstName = document.getElementById('registerFirstName').value;
+        const lastName = document.getElementById('registerLastName').value;
+        const username = document.getElementById('registerUsername').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
+        
+        if (password !== confirmPassword) {
+          alert('Passwords do not match');
+          return;
+        }
+        
+        try {
+          const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              firstName,
+              lastName,
+              username,
+              email,
+              password,
+              confirmPassword,
+            }),
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.href = '/dashboard';
+          } else {
+            alert('Registration failed: ' + data.error);
+          }
+        } catch (error) {
+          alert('Registration failed: ' + error.message);
+        }
+      }
+      
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        const modal = document.getElementById('authModal');
+        if (event.target === modal) {
+          closeModal();
+        }
+      }
+    </script>
+  </body>
+</html>
