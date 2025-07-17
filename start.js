@@ -225,7 +225,7 @@ app.use((error, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 SAT Battle Royale server running on port ${PORT}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
@@ -239,13 +239,24 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('  👨‍🎓 Student: student1@example.com / student123!');
 });
 
-// Handle process termination
-process.on('SIGINT', () => {
+// Graceful shutdown handler for Cloud Run
+const gracefulShutdown = () => {
   console.log('\n👋 Shutting down SAT Battle Royale...');
-  process.exit(0);
-});
+  server.close(() => {
+    console.log('🔒 Server closed');
+    process.exit(0);
+  });
+};
 
-process.on('SIGTERM', () => {
+// Graceful shutdown handler for Cloud Run
+const gracefulShutdown = () => {
   console.log('\n👋 Shutting down SAT Battle Royale...');
-  process.exit(0);
-});
+  server.close(() => {
+    console.log('🔒 Server closed');
+    process.exit(0);
+  });
+};
+
+// Handle process termination
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
