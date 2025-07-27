@@ -124,6 +124,274 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option:hover::before {
+            left: 100%;
+        }
+        
+        .option:hover {
+            border-color: #6366f1;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
+        }
+        
+        .option.selected {
+            border-color: #6366f1;
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .option.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            animation: correctPulse 0.6s ease-out;
+        }
+        
+        .option.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            animation: shake 0.6s ease-out;
+        }
+        
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .option-letter {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #475569;
+            margin-right: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .option.selected .option-letter {
+            background: #6366f1;
+            color: white;
+        }
+        
+        .option.correct .option-letter {
+            background: #10b981;
+            color: white;
+        }
+        
+        .option.incorrect .option-letter {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* Timer Animation */
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(#6366f1 0deg, #e5e7eb 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            transition: all 0.3s;
+        }
+        
+        .timer.warning {
+            background: conic-gradient(#f59e0b 0deg, #e5e7eb 0deg);
+            animation: pulse 1s infinite;
+        }
+        
+        .timer.critical {
+            background: conic-gradient(#ef4444 0deg, #e5e7eb 0deg);
+            animation: pulse 0.5s infinite;
+        }
+        
+        /* Question Animations */
+        .question-enter {
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        .question-exit {
+            animation: slideOutLeft 0.5s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+        }
+        
+        /* AI Hint System */
+        .hint-container {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .hint-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hint-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .hint-icon {
+            background: #6366f1;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .hint-text {
+            color: #4f46e5;
+            font-weight: 500;
+        }
+        
+        /* Battle Royale Elements */
+        .players-remaining {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .elimination-feed {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 300px;
+            z-index: 1000;
+        }
+        
+        .elimination {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transform: translateX(400px);
+            animation: slideInElimination 0.5s ease-out forwards;
+        }
+        
+        @keyframes slideInElimination {
+            to { transform: translateX(0); }
+        }
+        
+        /* Power-ups and Effects */
+        .power-up {
+            position: absolute;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 100;
+            animation: powerUpFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes powerUpFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Achievement Popup */
+        .achievement {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px) scale(0.8);
+            opacity: 0;
+            transition: all 0.5s ease;
+            z-index: 1000;
+        }
+        
+        .achievement.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+        
+        .achievement-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .achievement-description {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+            align-items: center;
         }
 
         .option:hover {
